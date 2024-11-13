@@ -2,7 +2,8 @@ from collections import defaultdict
 
 from atproto import AtUri, CAR, firehose_models, FirehoseSubscribeReposClient, models, parse_subscribe_repos_message
 from atproto.exceptions import FirehoseError
-
+from atproto_client.models.base import ModelBase
+from atproto_client.models.dot_dict import DotDict
 from server.database import SubscriptionState
 from server.logger import logger
 
@@ -15,7 +16,8 @@ _INTERESTED_RECORDS = {
 
 def _get_ops_by_type(commit: models.ComAtprotoSyncSubscribeRepos.Commit) -> defaultdict:
     operation_by_type = defaultdict(lambda: {'created': [], 'deleted': []})
-
+    if type(commit.blocks) is not bytes:
+        raise TypeError("commit.blocks is not type of bytes")
     car = CAR.from_bytes(commit.blocks)
     for op in commit.ops:
         if op.action == 'update':
@@ -36,6 +38,9 @@ def _get_ops_by_type(commit: models.ComAtprotoSyncSubscribeRepos.Commit) -> defa
 
             record = models.get_or_create(record_raw_data, strict=False)
             for record_type, record_nsid in _INTERESTED_RECORDS.items():
+                if type(record) is not ModelBase or type(record) is not DotDict:
+                    raise TypeError("commit.blocks is not type of bytes")
+
                 if uri.collection == record_nsid and models.is_record_type(record, record_type):
                     operation_by_type[record_nsid]['created'].append({'record': record, **create_info})
                     break

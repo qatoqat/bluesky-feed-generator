@@ -23,7 +23,10 @@ def handler(cursor: Optional[str], limit: int) -> dict:
 
         indexed_at, cid = cursor_parts
         indexed_at = datetime.fromtimestamp(int(indexed_at) / 1000)
-        posts = posts.where(((Post.indexed_at == indexed_at) & (Post.cid < cid)) | (Post.indexed_at < indexed_at))
+        posts = posts.where(
+            ((Post.indexed_at == indexed_at) & (Post.cid < cid)) # pyright: ignore
+            | (Post.indexed_at < indexed_at) # pyright: ignore
+        )
 
     feed = [{'post': post.uri} for post in posts]
 
