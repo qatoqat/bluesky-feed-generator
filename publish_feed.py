@@ -56,11 +56,10 @@ def main():
             avatar_data = f.read()
             avatar_blob = client.upload_blob(avatar_data).blob
 
-    if client.me is None:
-        raise TypeError("client.me is None")
+
 
     response = client.com.atproto.repo.put_record(models.ComAtprotoRepoPutRecord.Data(
-        repo=client.me.did,
+        repo=client.me.did, #pyright: ignore
         collection=models.ids.AppBskyFeedGenerator,
         rkey=RECORD_NAME,
         record=models.AppBskyFeedGenerator.Record(

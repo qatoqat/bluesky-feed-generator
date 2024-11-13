@@ -3,7 +3,6 @@ import signal
 import threading
 
 from server import config
-from server import data_stream
 
 from flask import Flask, jsonify, request
 
@@ -12,30 +11,14 @@ from server.data_filter import operations_callback
 
 app = Flask(__name__)
 
-stream_stop_event = threading.Event()
-stream_thread = threading.Thread(
-    target=data_stream.run, args=(config.SERVICE_DID, operations_callback, stream_stop_event,)
-)
-stream_thread.start()
-
-
-def sigint_handler(*_):
-    print('Stopping data stream...')
-    stream_stop_event.set()
-    sys.exit(0)
-
-
-signal.signal(signal.SIGINT, sigint_handler)
-
-
 @app.route('/')
 def index():
-    return 'ATProto Feed Generator powered by The AT Protocol SDK for Python (https://github.com/MarshalX/atproto).'
+    return 'ATProto Bookmark Feed Server (https://github.com/qatoqat/bluesky-feed-generator).'
 
 
 @app.route('/.well-known/did.json', methods=['GET'])
 def did_json():
-    if not config.SERVICE_DID.endswith(config.HOSTNAME):
+    if not config.SERVICE_DID.endswith(config.HOSTNAME): # pyright: ignore
         return '', 404
 
     return jsonify({
@@ -72,13 +55,11 @@ def get_feed_skeleton():
         return 'Unsupported algorithm', 400
 
     # Example of how to check auth if giving user-specific results:
-    """
     from server.auth import AuthorizationError, validate_auth
     try:
         requester_did = validate_auth(request)
     except AuthorizationError:
         return 'Unauthorized', 401
-    """
 
     try:
         cursor = request.args.get('cursor', default=None, type=str)

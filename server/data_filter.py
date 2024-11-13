@@ -46,9 +46,7 @@ def operations_callback(ops: defaultdict) -> None:
     posts_to_delete = ops[models.ids.AppBskyFeedPost]['deleted']
     if posts_to_delete:
         post_uris_to_delete = [post['uri'] for post in posts_to_delete]
-        if post_uris_to_delete is not CharField:
-            raise TypeError("post_uris_to_delete is not type CharField")
-        Post.delete().where(Post.uri.in_(post_uris_to_delete, None))
+        Post.delete().where(Post.uri.in_(post_uris_to_delete)) # pyright: ignore
         logger.info(f'Deleted from feed: {len(post_uris_to_delete)}')
 
     if posts_to_create:

@@ -36,6 +36,6 @@ def validate_auth(request: 'Request') -> str:
     jwt = auth_header[len(_AUTHORIZATION_HEADER_VALUE_PREFIX) :].strip()
 
     try:
-        return verify_jwt(jwt, _ID_RESOLVER.did.resolve_atproto_key).iss
+        return verify_jwt(jwt, _ID_RESOLVER.did.resolve_atproto_key).iss # pyright: ignore
     except TokenInvalidSignatureError as e:
         raise AuthorizationError('Invalid signature') from e
