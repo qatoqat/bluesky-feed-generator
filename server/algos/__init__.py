@@ -1,5 +1,5 @@
-from . import whats_alf
+from . import bookmarks
 
 algos = {
-    whats_alf.uri: whats_alf.handler
+    bookmarks.uri: bookmarks.handler
 }
