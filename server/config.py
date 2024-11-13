@@ -10,7 +10,7 @@ if SERVICE_DID is None:
     SERVICE_DID = f'did:web:{HOSTNAME}'
 
 
-WHATS_ALF_URI = os.environ.get('WHATS_ALF_URI')
-if WHATS_ALF_URI is None:
+BOOKMARKS_URI = os.environ.get('BOOKMARKS_URI')
+if BOOKMARKS_URI is None:
     raise RuntimeError('Publish your feed first (run publish_feed.py) to obtain Feed URI. '
-                       'Set this URI to "WHATS_ALF_URI" environment variable.')
+                       'Set this URI to "BOOKMARKS_URI" environment variable.')

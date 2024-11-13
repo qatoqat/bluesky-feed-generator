@@ -6,7 +6,7 @@ from atproto import Client, models
 
 # YOUR bluesky handle
 # Ex: user.bsky.social
-HANDLE: str = ''
+HANDLE: str = 'biskuvi-boomark.bsky.social'
 
 # YOUR bluesky password, or preferably an App Password (found in your client settings)
 # Ex: abcd-1234-efgh-5678
@@ -14,24 +14,24 @@ PASSWORD: str = ''
 
 # The hostname of the server where feed server will be hosted
 # Ex: feed.bsky.dev
-HOSTNAME: str = ''
+HOSTNAME: str = 'biskuvibookmark.pythonanywhere.com'
 
 # A short name for the record that will show in urls
 # Lowercase with no spaces.
 # Ex: whats-hot
-RECORD_NAME: str = ''
+RECORD_NAME: str = 'bookmarks'
 
 # A display name for your feed
 # Ex: What's Hot
-DISPLAY_NAME: str = ''
+DISPLAY_NAME: str = 'Bookmarks'
 
 # (Optional) A description of your feed
 # Ex: Top trending content from the whole network
-DESCRIPTION: str = 'powered by The AT Protocol SDK for Python'
+DESCRIPTION: str = 'Bookmark feed created using Biskuvi'
 
 # (Optional) The path to an image to be used as your feed's avatar
 # Ex: ./path/to/avatar.jpeg
-AVATAR_PATH: str = ''
+AVATAR_PATH: str = './assets/biscuit-flat.png'
 
 # (Optional). Only use this if you want a service did different from did:web
 SERVICE_DID: str = ''
@@ -56,6 +56,9 @@ def main():
             avatar_data = f.read()
             avatar_blob = client.upload_blob(avatar_data).blob
 
+    if client.me is None:
+        raise TypeError("client.me is None")
+
     response = client.com.atproto.repo.put_record(models.ComAtprotoRepoPutRecord.Data(
         repo=client.me.did,
         collection=models.ids.AppBskyFeedGenerator,
@@ -70,7 +73,7 @@ def main():
     ))
 
     print('Successfully published!')
-    print('Feed URI (put in "WHATS_ALF_URI" env var):', response.uri)
+    print('Feed URI (put in "BOOKMARKS_URI" env var):', response.uri)
 
 
 if __name__ == '__main__':
